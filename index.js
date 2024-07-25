@@ -26,26 +26,23 @@ function updateDisplay(displayVal) {
   document.getElementById("display").innerHTML = displayVal;
 }
 
-// document
-//   .querySelectorAll(".number")
-//   .forEach((btn) => btn.addEventListener("click", getDigits));
+function removeDecimal(input) {
+  let parts = input.split(".");
+  if (parts.length > 1) {
+    return parts[0] + "." + parts.slice(1).join("");
+  }
+  return Number(input).toString();
+}
 document.getElementById("calculator").addEventListener("click", function (e) {
   if (e.target && e.target.matches(".number")) {
     if (!operator.length) {
-      firstDigit = parseInt((firstDigit += e.target.id));
+      firstDigit = removeDecimal((firstDigit += e.target.id));
     } else if (operator.length && !firstDigit) {
-      firstDigit = parseInt((firstDigit += e.target.id));
+      firstDigit = removeDecimal((firstDigit += e.target.id));
     } else if (firstDigit && operator.length) {
-      secondDigit = parseInt((secondDigit += e.target.id));
+      secondDigit = removeDecimal((secondDigit += e.target.id));
     }
   }
-  // if (operator.length > 0 && firstDigit && !secondDigit) {
-  //   operator = operator.substring(1);
-  // }
-
-  // if (operator.length > 0 && !firstDigit) {
-  //   operator = operator.substring(1);
-  // }
   if (operator.length > 0) {
     if (!firstDigit) {
       operator = operator.substring(1);
@@ -59,15 +56,17 @@ document.getElementById("calculator").addEventListener("click", function (e) {
 
     if (firstDigit && secondDigit) {
       if (operator.length > 0) {
-        solution = operate(firstDigit, operator[0], secondDigit);
+        solution = operate(
+          parseFloat(firstDigit),
+          operator[0],
+          parseFloat(secondDigit)
+        );
         operator = operator.substring(1);
         firstDigit = solution;
         secondDigit = "";
       }
     }
   }
-
-  console.log(operator, firstDigit, "hsdsd");
 
   console.log(
     firstDigit,
@@ -78,8 +77,8 @@ document.getElementById("calculator").addEventListener("click", function (e) {
 
     solution
   );
-  let displayVal = Math.round(firstDigit * 100) / 100 + operator;
-  updateDisplay(displayVal);
+  let displayVal = Math.round(solution * 100) / 100 + operator;
+  updateDisplay(solution ? displayVal : firstDigit);
 });
 
 function add(a, b) {
@@ -97,18 +96,16 @@ function divide(a, b) {
 }
 
 function operate(a, operator, b) {
-  if (a && b) {
-    if (operator == "+") {
-      return add(a, b);
-    }
-    if (operator == "-") {
-      return subtract(a, b);
-    }
-    if (operator == "*") {
-      return multiply(a, b);
-    }
-    if (operator == "/") {
-      return divide(a, b);
-    }
+  if (operator == "+") {
+    return add(a, b);
+  }
+  if (operator == "-") {
+    return subtract(a, b);
+  }
+  if (operator == "*") {
+    return multiply(a, b);
+  }
+  if (operator == "/") {
+    return divide(a, b);
   }
 }
