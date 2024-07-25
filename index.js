@@ -1,39 +1,43 @@
-//  store first number and second number that are inputted
-// utilize the operator the user selects and then call operate() when = pressed
-// once opertate is called the solution should be dispalyed
-// but the display should be populated before hand
-// store all the values and call the operate function with them, no more than a pair
-// eval first 2 pairs, display result, and then use that nuber in new calc, when second operator present
-// round answers with long answers, preventing overflow
-// dont allow = pressed until all nums and op present
-// pressing clear (AC), clears data
-// disable more than one decimal point
-// make it look nice
-
-//op1 gets assigned when operator is false, when operator is true, op2 gets assigned user val
-// if operator.length >1, call operator(op1,operator[0], op2) and set op1 to that val, delete the first el off operator
-// now that operator is still true, the input gets assigned to op2, and operator.length < 1 so operatote() doesnt get called yet,
-// all of this runs on the event listner of course
-
 let firstDigit = "";
 let secondDigit = "";
 let operator = "";
 let solution = 0;
 
+function clearCalc() {
+  firstDigit = "";
+  secondDigit - "";
+  operator = "";
+  solution = 0;
+}
 function updateDisplay(displayVal) {
-  //update screen with values
-
   document.getElementById("display").innerHTML = displayVal;
 }
 
 function removeDecimal(input) {
   let parts = input.split(".");
+
   if (parts.length > 1) {
-    return parts[0] + "." + parts.slice(1).join("");
+    console.log(parts[1]);
+    return parts[0] + "." + parts[1].toString();
   }
   return Number(input).toString();
 }
+
 document.getElementById("calculator").addEventListener("click", function (e) {
+  if (e.target && e.target.matches(".AC")) {
+    console.log("ufdkfdk");
+    clearCalc();
+  }
+  if (e.target && e.target.matches(".submit") && firstDigit && secondDigit) {
+    solution = operate(
+      parseFloat(firstDigit),
+      operator[0],
+      parseFloat(secondDigit)
+    );
+    operator = operator.substring(1);
+    firstDigit = solution;
+    secondDigit = "";
+  }
   if (e.target && e.target.matches(".number")) {
     if (!operator.length) {
       firstDigit = removeDecimal((firstDigit += e.target.id));
@@ -68,17 +72,12 @@ document.getElementById("calculator").addEventListener("click", function (e) {
     }
   }
 
-  console.log(
-    firstDigit,
-    "first dig",
-    secondDigit,
-    "second dig",
-    operator,
+  let displayVal =
+    firstDigit && !secondDigit
+      ? firstDigit.toString().substring(0, 8) + operator
+      : secondDigit.toString().substring(0, 8);
 
-    solution
-  );
-  let displayVal = Math.round(solution * 100) / 100 + operator;
-  updateDisplay(solution ? displayVal : firstDigit);
+  updateDisplay(displayVal);
 });
 
 function add(a, b) {
