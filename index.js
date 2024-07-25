@@ -5,7 +5,7 @@ let solution = 0;
 
 function clearCalc() {
   firstDigit = "";
-  secondDigit - "";
+  secondDigit = "";
   operator = "";
   solution = 0;
 }
@@ -24,10 +24,6 @@ function removeDecimal(input) {
 }
 
 document.getElementById("calculator").addEventListener("click", function (e) {
-  if (e.target && e.target.matches(".AC")) {
-    console.log("ufdkfdk");
-    clearCalc();
-  }
   if (e.target && e.target.matches(".submit") && firstDigit && secondDigit) {
     solution = operate(
       parseFloat(firstDigit),
@@ -78,6 +74,11 @@ document.getElementById("calculator").addEventListener("click", function (e) {
       : secondDigit.toString().substring(0, 8);
 
   updateDisplay(displayVal);
+
+  if (e.target && e.target.matches(".AC")) {
+    clearCalc();
+    updateDisplay(0);
+  }
 });
 
 function add(a, b) {
@@ -108,3 +109,8 @@ function operate(a, operator, b) {
     return divide(a, b);
   }
 }
+
+function init() {
+  updateDisplay(0);
+}
+init();
