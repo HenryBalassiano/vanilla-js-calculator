@@ -30,32 +30,55 @@ function updateDisplay(displayVal) {
 //   .querySelectorAll(".number")
 //   .forEach((btn) => btn.addEventListener("click", getDigits));
 document.getElementById("calculator").addEventListener("click", function (e) {
-  if (e.target && e.target.matches(".number") && !operator.length) {
-    firstDigit = parseInt((firstDigit += e.target.id));
-  } else if (firstDigit && operator.length) {
-    secondDigit = parseInt((secondDigit += e.target.id));
+  if (e.target && e.target.matches(".number")) {
+    if (!operator.length) {
+      firstDigit = parseInt((firstDigit += e.target.id));
+    } else if (operator.length && !firstDigit) {
+      firstDigit = parseInt((firstDigit += e.target.id));
+    } else if (firstDigit && operator.length) {
+      secondDigit = parseInt((secondDigit += e.target.id));
+    }
+  }
+  // if (operator.length > 0 && firstDigit && !secondDigit) {
+  //   operator = operator.substring(1);
+  // }
+
+  // if (operator.length > 0 && !firstDigit) {
+  //   operator = operator.substring(1);
+  // }
+  if (operator.length > 0) {
+    if (!firstDigit) {
+      operator = operator.substring(1);
+    }
+    if (firstDigit && !secondDigit) {
+      operator = operator.substring(1);
+    }
   }
   if (e.target && e.target.matches(".operator")) {
     operator += e.target.id;
+
     if (firstDigit && secondDigit) {
-      if (operator.length > 1) {
+      if (operator.length > 0) {
         solution = operate(firstDigit, operator[0], secondDigit);
         operator = operator.substring(1);
-
         firstDigit = solution;
-        secondDigit = 0;
+        secondDigit = "";
       }
     }
   }
+
+  console.log(operator, firstDigit, "hsdsd");
+
   console.log(
     firstDigit,
+    "first dig",
     secondDigit,
+    "second dig",
     operator,
 
-    solution,
-    "hi there im a solution"
+    solution
   );
-  let displayVal = firstDigit.toString() + operator;
+  let displayVal = Math.round(firstDigit * 100) / 100 + operator;
   updateDisplay(displayVal);
 });
 
