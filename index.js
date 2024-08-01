@@ -75,7 +75,7 @@ let calculator = {
   },
 
   init() {
-    this.updateDisplay(0);
+    this.updateDisplay("0");
   },
 };
 
