@@ -22,8 +22,12 @@
   height: 80px;
 }
 #AC {
-  grid-column: span 4;
+  grid-column: span 3;
   background-color: rgb(218, 66, 66);
+}
+.submit {
+  grid-row: 2 span;
+  background-color: rgb(221, 221, 118);
 }
 button {
   margin: 1px;
@@ -34,10 +38,7 @@ button {
   font-family: monospace;
   color: black;
 }
-#pad {
-  grid-column: span 2;
-  background-color: orange;
-}
+
 #main {
   display: flex;
   min-height: 95vh;
