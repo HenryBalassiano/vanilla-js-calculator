@@ -13,7 +13,7 @@ let calculator = {
   },
 
   updateDisplay(displayVal) {
-    document.getElementById("display").innerHTML = displayVal;
+    document.getElementById("display").innerHTML = displayVal.substring(0, 9);
   },
 
   handleNumber(input) {
