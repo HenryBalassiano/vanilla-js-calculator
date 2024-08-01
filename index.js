@@ -1,116 +1,94 @@
-let firstDigit = "";
-let secondDigit = "";
-let operator = "";
-let solution = 0;
+let calculator = {
+  firstDigit: "",
+  secondDigit: "",
+  operator: "",
+  solution: 0,
 
-function clearCalc() {
-  firstDigit = "";
-  secondDigit = "";
-  operator = "";
-  solution = 0;
-}
-function updateDisplay(displayVal) {
-  document.getElementById("display").innerHTML = displayVal;
-}
+  clear() {
+    this.firstDigit = "";
+    this.secondDigit = "";
+    this.operator = "";
+    this.solution = 0;
+    this.updateDisplay(0);
+  },
 
-function removeDecimal(input) {
-  let parts = input.split(".");
+  updateDisplay(displayVal) {
+    document.getElementById("display").innerHTML = displayVal;
+  },
 
-  if (parts.length > 1) {
-    console.log(parts[1]);
-    return parts[0] + "." + parts[1].toString();
-  }
-  return Number(input).toString();
-}
+  handleNumber(input) {
+    if (!this.operator.length) {
+      this.firstDigit = this.removeDecimal(this.firstDigit + input);
+    } else {
+      this.secondDigit = this.removeDecimal(this.secondDigit + input);
+    }
+    this.updateDisplay(this.getDisplayValue());
+  },
+
+  handleOperator(op) {
+    if (this.firstDigit && this.secondDigit) {
+      this.calculate();
+    }
+    this.operator = op;
+    this.updateDisplay(this.getDisplayValue());
+  },
+
+  calculate() {
+    if (this.firstDigit && this.operator && this.secondDigit) {
+      this.solution = this.operate(
+        parseFloat(this.firstDigit),
+        this.operator,
+        parseFloat(this.secondDigit)
+      );
+      this.firstDigit = this.solution.toString();
+      this.secondDigit = "";
+      this.operator = "";
+      this.updateDisplay(this.getDisplayValue());
+    }
+  },
+
+  removeDecimal(input) {
+    let parts = input.split(".");
+    if (parts.length > 1) {
+      return parts[0] + "." + parts[1];
+    }
+    return Number(input).toString();
+  },
+
+  getDisplayValue() {
+    return this.secondDigit || this.firstDigit + this.operator;
+  },
+
+  operate(a, operator, b) {
+    switch (operator) {
+      case "+":
+        return a + b;
+      case "-":
+        return a - b;
+      case "*":
+        return a * b;
+      case "/":
+        return a / b;
+      default:
+        return 0;
+    }
+  },
+
+  init() {
+    this.updateDisplay(0);
+  },
+};
 
 document.getElementById("calculator").addEventListener("click", function (e) {
-  if (e.target && e.target.matches(".submit") && firstDigit && secondDigit) {
-    solution = operate(
-      parseFloat(firstDigit),
-      operator[0],
-      parseFloat(secondDigit)
-    );
-    operator = operator.substring(1);
-    firstDigit = solution;
-    secondDigit = "";
-  }
-  if (e.target && e.target.matches(".number")) {
-    if (!operator.length) {
-      firstDigit = removeDecimal((firstDigit += e.target.id));
-    } else if (operator.length && !firstDigit) {
-      firstDigit = removeDecimal((firstDigit += e.target.id));
-    } else if (firstDigit && operator.length) {
-      secondDigit = removeDecimal((secondDigit += e.target.id));
-    }
-  }
-  if (operator.length > 0) {
-    if (!firstDigit) {
-      operator = operator.substring(1);
-    }
-    if (firstDigit && !secondDigit) {
-      operator = operator.substring(1);
-    }
-  }
-  if (e.target && e.target.matches(".operator")) {
-    operator += e.target.id;
-
-    if (firstDigit && secondDigit) {
-      if (operator.length > 0) {
-        solution = operate(
-          parseFloat(firstDigit),
-          operator[0],
-          parseFloat(secondDigit)
-        );
-        operator = operator.substring(1);
-        firstDigit = solution;
-        secondDigit = "";
-      }
-    }
-  }
-
-  let displayVal =
-    firstDigit && !secondDigit
-      ? firstDigit.toString().substring(0, 8) + operator
-      : secondDigit.toString().substring(0, 8);
-
-  updateDisplay(displayVal);
-
-  if (e.target && e.target.matches(".AC")) {
-    clearCalc();
-    updateDisplay(0);
+  if (e.target.matches(".number")) {
+    calculator.handleNumber(e.target.id);
+  } else if (e.target.matches(".operator")) {
+    calculator.handleOperator(e.target.id);
+  } else if (e.target.matches(".submit")) {
+    calculator.calculate();
+  } else if (e.target.matches(".AC")) {
+    calculator.clear();
   }
 });
 
-function add(a, b) {
-  return a + b;
-}
-function subtract(a, b) {
-  return a - b;
-}
-
-function multiply(a, b) {
-  return a * b;
-}
-function divide(a, b) {
-  return a / b;
-}
-
-function operate(a, operator, b) {
-  if (operator == "+") {
-    return add(a, b);
-  }
-  if (operator == "-") {
-    return subtract(a, b);
-  }
-  if (operator == "*") {
-    return multiply(a, b);
-  }
-  if (operator == "/") {
-    return divide(a, b);
-  }
-}
-
-function init() {
-  updateDisplay(0);
-}
-init();
+calculator.init();

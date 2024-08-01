@@ -22,7 +22,7 @@
   height: 80px;
 }
 #AC {
-  grid-column: span 2;
+  grid-column: span 4;
   background-color: rgb(218, 66, 66);
 }
 button {
